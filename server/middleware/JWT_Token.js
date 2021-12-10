@@ -27,7 +27,7 @@ const validateToken = (req, res, next) => {
         return res.status(400).json({ error: "User not authenticated" });
     try {
         const validateToken = verify(accessToken, process.env.JWT_SECRET);
-        if (validToken) {
+        if (validateToken) {
             req.authenticated = true;
             return next();
         }
