@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { UserPanel } from "./UserPanel";
 
+/**
+ * Header on page
+ * @param {*} props should contain role and name
+ * @returns JSX.Element
+ */
 export const Header = (props) => {
     return (
         <nav className="navbar navbar-light bg-light  sticky-top">
