@@ -1,26 +1,25 @@
 const db = require("../models");
 const User = db.users;
 
-//TODO: after first launch check how update user's loyalty system id
-
 /**
  * Create user with provided information
  * @param {*} user Object which contains login, password, email, role, balance
  * @returns user
  */
-exports.createUser = (user) => {
+exports.createUser = (systemId, user) => {
     return User.create({
         login: user.login,
         password: user.password,
         email: user.email,
         role: user.role,
         balance: user.balance,
+        systemId: systemId,
     })
-        .then((user) => {
+        .then((newUser) => {
             console.log(
-                ">> User was created: " + JSON.stringify(user, null, 4)
+                ">> User was created: " + JSON.stringify(newUser, null, 4)
             );
-            return user;
+            return newUser;
         })
         .catch((err) => {
             console.log(">> Error while creating user: " + err);
@@ -42,13 +41,15 @@ exports.deleteUser = (userId) => {
             console.log(">> Error while deleting user: " + err);
         });
 };
+
 /**
- * Update all user info by provided data
- * @param {*} user Should contain all data for updating user
- * @returns updated user
+ *Update user by provided data
+ * @param {*} userId which user is being updated
+ * @param {*} user Data for update (login, password, email, role, balance)
+ * @returns
  */
 
-exports.updateUser = (user) => {
+exports.updateUser = (userId, user) => {
     return User.update(
         {
             login: user.login,
@@ -57,12 +58,12 @@ exports.updateUser = (user) => {
             role: user.role,
             balance: user.balance,
         },
-        { where: { id: user.id } }
+        { where: { id: userId } }
     )
-        .then((user) => {
+        .then((newUser) => {
             console.log(
                 ">> User was successfully updated: " +
-                    JSON.stringify(user, null, 4)
+                    JSON.stringify(newUser, null, 4)
             );
         })
         .catch((err) => {
