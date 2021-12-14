@@ -5,11 +5,11 @@ require("dotenv").config();
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
     process.env.DB,
-    process.env.USER,
+    process.env.USER_DB,
     process.env.PASSWORD,
     {
         host: process.env.HOST,
-        dialect: process.env.DIALECT,
+        dialect: "postgres",
     }
 );
 
@@ -20,7 +20,7 @@ db.sequelize = sequelize;
 
 //Loading models to further work with database
 db.users = require("./user.model.js")(sequelize, Sequelize);
-db.purchases = require("./personal_data.model.js")(sequelize, Sequelize);
+db.purchases = require("./purchase.model.js")(sequelize, Sequelize);
 db.personal_datas = require("./personal_data.model.js")(sequelize, Sequelize);
 db.loyalty_systems = require("./loyalty_system.model.js")(sequelize, Sequelize);
 db.fixed_system_options = require("./fixed_system_option.model.js")(
