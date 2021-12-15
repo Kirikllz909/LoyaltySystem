@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
-        discount_value: { type: DataTypes.INTEGER },
+        discount_value: { type: DataTypes.INTEGER, allowNull: false },
     });
     return FixedSystemOption;
 };
