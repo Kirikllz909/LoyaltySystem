@@ -9,9 +9,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             step_value: {
                 type: DataTypes.INTEGER,
+                allowNull: false,
             },
-            discount_value: { type: DataTypes.INTEGER },
-            counting_period: { type: DataTypes.STRING },
+            discount_value: { type: DataTypes.INTEGER, allowNull: false },
+            counting_period: { type: DataTypes.STRING, allowNull: false },
         }
     );
     return CumulativeSystemOption;
