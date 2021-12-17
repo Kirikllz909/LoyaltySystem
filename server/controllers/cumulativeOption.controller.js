@@ -67,3 +67,22 @@ exports.updateCumulativeOption = (optionId, cumulativeOption) => {
             console.log(">> Failed to update Cumulative option: " + err);
         });
 };
+
+/**
+ * Find all cumulative options by provided system id
+ * @param {*} systemId System id for searching all options
+ * @returns cumulativeSystemOption[0..*]
+ */
+
+exports.findAllCumulativeOptions = (systemId) => {
+    return CumulativeSystemOption.findAll({ where: { systemId: systemId } })
+        .then((foundOptions) => {
+            console.log(
+                ">> Found options:" + JSON.stringify(foundOptions, null, 4)
+            );
+            return foundOptions;
+        })
+        .catch((err) => {
+            console.log(">> Error while finding options: " + err);
+        });
+};
