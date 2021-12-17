@@ -46,3 +46,22 @@ exports.updateFixedOption = (optionId, fixedOption) => {
             console.log(">> Error while updating option: " + err);
         });
 };
+
+/**
+ * Find fixed system option with provided system id
+ * @param {*} systemId System id for searching option
+ * @returns fixedSystemOption
+ */
+
+exports.findFixedOption = (systemId) => {
+    return FixedSystemOption.findAll({ where: { systemId: systemId } })
+        .then((foundOption) => {
+            console.log(
+                ">> Found option: " + JSON.stringify(foundOption, null, 4)
+            );
+            return foundOption;
+        })
+        .catch((error) => {
+            console.log(">>Error while finding option: " + err);
+        });
+};
