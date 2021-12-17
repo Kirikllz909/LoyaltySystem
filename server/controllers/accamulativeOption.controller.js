@@ -69,7 +69,7 @@ exports.updateAccamulativeOption = (optionId, accamulativeOption) => {
  * @param {*} optionId Id of option to delete
  */
 
-exports.deleteAccumulativeOption = (optionId) => {
+exports.deleteAccamulativeOption = (optionId) => {
     AccamulativeSystemOption.destroy(optionId)
         .then(() => {
             console.log(">> Option was successfully deleted");
