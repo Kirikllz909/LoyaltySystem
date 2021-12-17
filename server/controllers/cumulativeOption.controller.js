@@ -45,11 +45,10 @@ exports.deleteCumulativeOption = (optionId) => {
  * Update existing option with provided data
  * @param {*} optionId Id for updating option
  * @param {*} cumulativeOption Data for new option/ Require step_value, discount_value, counting_period and systemId
- * @returns
  */
 
 exports.updateCumulativeOption = (optionId, cumulativeOption) => {
-    return CumulativeSystemOption.update(
+    CumulativeSystemOption.update(
         {
             step_value: cumulativeOption.step_value,
             discount_value: cumulativeOption.discount_value,
@@ -63,7 +62,6 @@ exports.updateCumulativeOption = (optionId, cumulativeOption) => {
                 ">> Cumulative option was successfully updated: " +
                     JSON.stringify(newCumulativeOption, null, 4)
             );
-            return newCumulativeOption;
         })
         .catch((err) => {
             console.log(">> Failed to update Cumulative option: " + err);

@@ -51,7 +51,7 @@ exports.removePersonalData = (userId) => {
  */
 
 exports.updatePersonalData = (userId, personalData) => {
-    return personalData
+    personalData
         .update(
             {
                 name: personalData.name,
@@ -66,7 +66,6 @@ exports.updatePersonalData = (userId, personalData) => {
                 ">> PersonalData was successfully updated: " +
                     JSON.stringify(newPersonalData, null, 4)
             );
-            return newPersonalData;
         })
         .catch((err) => {
             console.log(">> Error while updating personal data: " + err);

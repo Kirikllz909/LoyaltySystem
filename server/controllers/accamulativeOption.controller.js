@@ -36,11 +36,10 @@ exports.createAccamulativeOption = (accamulativeOption) => {
  *Update data of option by provided id
  * @param {*} optionId Id of updating option
  * @param {*} accamulativeOption Data for updating option. Should contain step_value, purchase_exchange, score_rate_exchange, points_payment_limit_min, points_payment_limit_max, points_time_limit and systemId
- * @returns
  */
 
 exports.updateAccamulativeOption = (optionId, accamulativeOption) => {
-    return AccamulativeSystemOption.update(
+    AccamulativeSystemOption.update(
         {
             step_value: accamulativeOption.step_value,
             purchase_exchange: accamulativeOption.purchase_exchange,
@@ -59,7 +58,6 @@ exports.updateAccamulativeOption = (optionId, accamulativeOption) => {
                 ">> New accamulative system option was successfully created: " +
                     JSON.stringify(newAccamulativeOption, null, 4)
             );
-            return newAccamulativeOption;
         })
         .catch((err) => {
             console.log(">> Failed to create new accamulative option: " + err);

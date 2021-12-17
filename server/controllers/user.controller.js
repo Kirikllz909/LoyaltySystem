@@ -46,11 +46,10 @@ exports.deleteUser = (userId) => {
  *Update user by provided data
  * @param {*} userId which user is being updated
  * @param {*} user Data for update (login, password, email, role, balance)
- * @returns
  */
 
 exports.updateUser = (userId, user) => {
-    return User.update(
+    User.update(
         {
             login: user.login,
             password: user.password,

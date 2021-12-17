@@ -58,7 +58,6 @@ exports.updatePurchase = (purchaseId, purchase) => {
                 ">> Purchase updated successfully: " +
                     JSON.stringify(newPurchase, null, 4)
             );
-            return newPurchase;
         })
         .catch((error) => {
             console.log(

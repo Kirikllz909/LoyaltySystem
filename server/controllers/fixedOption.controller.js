@@ -7,7 +7,7 @@ const FixedSystemOption = db.fixed_system_options;
  */
 
 exports.createFixedOption = (fixedOption) => {
-    FixedSystemOption.create({
+    return FixedSystemOption.create({
         discount_value: fixedOption.discount_value,
         systemId: fixedOption.systemId,
     })
@@ -41,7 +41,6 @@ exports.updateFixedOption = (optionId, fixedOption) => {
                 ">> Fixed option was successfully updated: " +
                     JSON.stringify(newFixedOption, null, 4)
             );
-            return newFixedOption;
         })
         .catch((err) => {
             console.log(">> Error while updating option: " + err);
