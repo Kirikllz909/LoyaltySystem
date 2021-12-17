@@ -9,10 +9,25 @@ module.exports = (sequelize, DataTypes) => {
             },
             step_value: {
                 type: DataTypes.INTEGER,
+                allowNull: false,
             },
             purchase_exchange: {
                 type: DataTypes.INTEGER,
+                allowNull: false,
             },
+            score_rate_exchange: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            points_payment_limit_min: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            points_payment_limit_max: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            points_time_limit: { type: DataTypes.STRING, allowNull: false },
         }
     );
     return AccamulativeSystemOption;
