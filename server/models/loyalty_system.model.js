@@ -5,9 +5,9 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
-        name: { type: DataTypes.STRING },
-        description: { type: DataTypes.STRING },
-        type: { type: DataTypes.STRING },
+        name: { type: DataTypes.STRING, allowNull: false },
+        description: { type: DataTypes.STRING, allowNull: false },
+        type: { type: DataTypes.STRING, allowNull: false },
     });
     return LoyaltySystem;
 };
