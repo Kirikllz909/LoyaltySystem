@@ -47,7 +47,7 @@ db.purchases.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 db.personal_datas.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 
 // Loyalty system can have many users, one fixed option or many cumulative options or many accumulative options
-db.loyalty_systems.hasMany(db.users, { foreignKey: systemId });
+db.loyalty_systems.hasMany(db.users, { foreignKey: "systemId" });
 db.loyalty_systems.hasOne(db.fixed_system_options, { as: "fixed_option" });
 db.loyalty_systems.hasMany(db.cumulative_system_options, {
     as: "cumulative_options",
