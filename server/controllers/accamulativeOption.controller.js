@@ -78,3 +78,22 @@ exports.deleteAccumulativeOption = (optionId) => {
             console.log(">> Failed to delete option: " + err);
         });
 };
+
+/**
+ * Find all options by provided system id
+ * @param {*} systemId System id for searching options
+ * @returns accamulativeSystemOption[0..*]
+ */
+
+exports.findAllAccamulativeOptions = (systemId) => {
+    return AccamulativeSystemOption.findAll({ where: { systemId: systemId } })
+        .then((foundOptions) => {
+            console.log(
+                ">> Found all options: " + JSON.stringify(foundOptions, null, 4)
+            );
+            return foundOptions;
+        })
+        .catch((err) => {
+            console.log(">> Failed to find all options: " + err);
+        });
+};
