@@ -45,7 +45,7 @@ exports.deleteUser = (userId) => {
 /**
  *Update user by provided data
  * @param {*} userId which user is being updated
- * @param {*} user Data for update (login, password, email, role, balance)
+ * @param {*} user Data for update (login, password, email, role, balance, jwt_token)
  */
 
 exports.updateUser = (userId, user) => {
@@ -56,6 +56,7 @@ exports.updateUser = (userId, user) => {
             email: user.email,
             role: user.role,
             balance: user.balance,
+            jwt_token: user.jwt_token,
         },
         { where: { id: userId } }
     )
