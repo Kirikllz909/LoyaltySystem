@@ -1,9 +1,11 @@
 const db = require("../models");
 const LoyaltySystem = db.loyalty_systems;
 
+//TODO: add making system main and make is_default of others systems false. Add find main system
+
 /**
  * Create loyalty system with provided information
- * @param {*} loyaltySystem Data of creating loyalty system. Should contain name, description and type
+ * @param {*} loyaltySystem Data of creating loyalty system. Should contain name, description, type and isDefault
  */
 
 exports.createLoyaltySystem = (loyaltySystem) => {
@@ -11,6 +13,7 @@ exports.createLoyaltySystem = (loyaltySystem) => {
         name: loyaltySystem.name,
         description: loyaltySystem.description,
         type: loyaltySystem.type,
+        is_default: loyaltySystem.isDefault,
     })
         .then((newLoyaltySystem) => {
             console.log(
