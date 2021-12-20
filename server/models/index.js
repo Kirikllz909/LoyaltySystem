@@ -36,9 +36,15 @@ db.accamulative_system_options =
 
 //Configuration relationship between models
 //User have many purchases but only one loyalty system and personal information
-db.users.hasOne(db.personal_datas, { as: "personal_data" });
-db.users.belongsTo(db.loyalty_systems);
-db.users.hasMany(db.purchases, { as: "purchases" });
+db.users.hasOne(db.personal_datas, {
+    foreignKey: "userId",
+    as: "personal_data",
+});
+db.users.belongsTo(db.loyalty_systems, {
+    foreignKey: "systemId",
+    as: "loyalty_system",
+});
+db.users.hasMany(db.purchases, { foreignKey: "userId", as: "purchases" });
 
 //Many purchases have one user
 db.purchases.belongsTo(db.users, { foreignKey: "userId", as: "user" });
@@ -48,12 +54,17 @@ db.personal_datas.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 
 // Loyalty system can have many users, one fixed option or many cumulative options or many accumulative options
 db.loyalty_systems.hasMany(db.users, { foreignKey: "systemId" });
-db.loyalty_systems.hasOne(db.fixed_system_options, { as: "fixed_option" });
+db.loyalty_systems.hasOne(db.fixed_system_options, {
+    foreignKey: "systemId",
+    as: "fixed_option",
+});
 db.loyalty_systems.hasMany(db.cumulative_system_options, {
+    foreignKey: "systemId",
     as: "cumulative_options",
 });
 db.loyalty_systems.hasMany(db.accamulative_system_options, {
-    as: "accumulative_options",
+    foreignKey: "systemId",
+    as: "accamulative_options",
 });
 
 //Only one loyalty system can have one fixed system option
