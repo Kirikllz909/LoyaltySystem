@@ -7,14 +7,7 @@ const User = db.users;
  * @returns user
  */
 exports.createUser = (systemId, user) => {
-    return User.create({
-        login: user.login,
-        password: user.password,
-        email: user.email,
-        role: user.role,
-        balance: user.balance,
-        systemId: systemId,
-    })
+    return User.create(user)
         .then((newUser) => {
             console.log(
                 ">> User was created: " + JSON.stringify(newUser, null, 4)
@@ -49,17 +42,7 @@ exports.deleteUser = (userId) => {
  */
 
 exports.updateUser = (userId, user) => {
-    User.update(
-        {
-            login: user.login,
-            password: user.password,
-            email: user.email,
-            role: user.role,
-            balance: user.balance,
-            jwt_token: user.jwt_token,
-        },
-        { where: { id: userId } }
-    )
+    User.update(user, { where: { id: userId } })
         .then((newUser) => {
             console.log(
                 ">> User was successfully updated: " +
