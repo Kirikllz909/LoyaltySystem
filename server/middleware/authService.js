@@ -1,9 +1,9 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const UserController = require("../controllers/user.controller");
-const { createToken, validateToken } = require("./JWT_Token");
+const { createToken } = require("./JWT_Token");
 
-//TODO: create user login and register
+//TODO: create user register and and create function for updating jwt in database
 class AuthService {
     /**
      * Return result of comparing data with schema for authorization
@@ -30,6 +30,8 @@ class AuthService {
             email: Joi.string().min(6).email(),
             password: Joi.string().min(6).required(),
             repeatPassword: Joi.string().min(6).required(),
+            balance: Joi.number().min(1),
+            systemId: Joi.number().min(1),
         });
         return schema.validate(data);
     }
@@ -75,7 +77,6 @@ class AuthService {
         });
         return isExist;
     }
-    //TODO: add bcrypt to adding user and checking login
 
     async isPasswordCorrect(data) {
         const { login, password } = data;
@@ -105,10 +106,10 @@ class AuthService {
         try {
             const { error } = this.loginValidation(data); //Check req.body data
             if (error) {
-                return { error };
+                return { error: "" + error };
             }
-        } catch (err) {
-            return { err };
+        } catch (error) {
+            return { error: "" + error };
         }
 
         const isLoginExist = await this.isLoginExist(data);
@@ -126,10 +127,81 @@ class AuthService {
         }
 
         const tokenObject = await this.createTokenObject(data);
+
+        UserController.updateUser(tokenObject.id, {
+            jwt_token: tokenObject.jwt,
+        });
         return { result: { tokenObject } };
     }
 
-    register(data) {}
+    async register(data) {
+        try {
+            const { error } = this.registerValidation(data);
+            if (error) return { error: "" + error };
+        } catch (error) {
+            return { error: "" + error };
+        }
+
+        const isRepeatPasswordCorrect = await this.isRepeatPasswordCorrect(
+            data
+        );
+        if (!isRepeatPasswordCorrect) {
+            return {
+                error: {
+                    details: [
+                        {
+                            message:
+                                "Password and repeat password are not equal",
+                        },
+                    ],
+                },
+            };
+        }
+
+        const isLoginExist = await this.isLoginExist(data);
+        if (isLoginExist) {
+            return {
+                error: { details: [{ message: "Login already exists" }] },
+            };
+        }
+
+        const isEmailExist = await this.isEmailExist(data);
+        if (isEmailExist) {
+            return {
+                error: { details: [{ message: "Email already exists" }] },
+            };
+        }
+
+        const tokenObject = await this.createTokenObject(data);
+
+        let salt, hashedPassword;
+        try {
+            salt = await bcrypt.genSalt(10);
+        } catch (err) {
+            return { error: "" + error };
+        }
+
+        try {
+            hashedPassword = await bcrypt.hash(data.password, salt);
+        } catch (error) {
+            return { error: "" + error };
+        }
+        try {
+            UserController.createUser(systemId, {
+                login: data.login,
+                password: hashedPassword,
+                email: data.email,
+                role: "user",
+                balance: data.balance ? data.balance : 0,
+                systemId: data.systemId ? data.systemId : 1,
+            });
+        } catch (error) {
+            return { error: "" + error };
+        }
+        return {
+            result: { details: [{ message: "User created successfully" }] },
+        };
+    }
 }
 
 module.exports = new AuthService();
