@@ -45,10 +45,10 @@ class AuthService {
     async isLoginExist(data) {
         const { login } = data;
         const users = await UserController.findAllUsers();
-        const isExist = users.some((user) => {
-            user.login === login;
-        });
-        return isExist;
+        if (!users || users.length === 0) return false;
+        const filteredArray = users.filter((user) => user.login === login);
+        if (filteredArray.length === 0) return false;
+        return true;
     }
 
     /**
@@ -60,8 +60,10 @@ class AuthService {
     async findByLogin(data) {
         const { login } = data;
         const users = await UserController.findAllUsers();
-        const filteredUsers = users.filter((user) => user.login === login);
-        return filteredUsers[0];
+        if (!users || users.length === 0) return false;
+        const filteredArray = users.filter((user) => user.login === login);
+        if (filteredArray.length === 0) return false;
+        return filteredArray[0];
     }
 
     /**
@@ -73,15 +75,16 @@ class AuthService {
     async isEmailExist(data) {
         const { email } = data;
         const users = await UserController.findAllUsers();
-        let isExist = users.some((user) => {
-            user.email === email;
-        });
-        return isExist;
+        if (!users || users.length === 0) return false;
+        const filteredArray = users.filter((user) => user.email === email);
+        if (filteredArray.length === 0) return false;
+        return true;
     }
 
     async isPasswordCorrect(data) {
         const { password } = data;
         const user = await this.findByLogin(data);
+        if (!user) return false;
         const validPassword = await bcrypt.compare(password, user.password);
         return validPassword;
     }
@@ -120,10 +123,12 @@ class AuthService {
             };
         } // Error format: error.details[0].message
 
-        const isPasswordCorrect = this.isPasswordCorrect(data);
+        const isPasswordCorrect = await this.isPasswordCorrect(data);
         if (!isPasswordCorrect) {
             return {
-                error: { details: [{ message: "Wrong login or password[2]" }] },
+                error: {
+                    details: [{ message: "Wrong login or password" }],
+                },
             };
         }
 
@@ -133,11 +138,10 @@ class AuthService {
             await UserController.updateUser(tokenObject.id, {
                 jwt_token: tokenObject.jwt,
             });
+            return { result: { tokenObject } };
         } catch (error) {
             return { error: "" + error };
         }
-        if (!updateUser) return { error: "Failed to update user" };
-        return { result: { tokenObject } };
     }
 
     async register(data) {
@@ -194,7 +198,7 @@ class AuthService {
         try {
             const defaultSystem =
                 await LoyaltySystemController.findDefaultSystem();
-            await UserController.createUser(systemId, {
+            const createdUser = await UserController.createUser(data.systemId, {
                 login: data.login,
                 password: hashedPassword,
                 email: data.email,
@@ -204,12 +208,21 @@ class AuthService {
                     ? data.systemId
                     : defaultSystem.system_id,
             });
+            if (!createdUser) {
+                return {
+                    error: {
+                        details: [{ message: "Error while creating user" }],
+                    },
+                };
+            }
+            return {
+                result: {
+                    details: [{ message: "User was created successfully" }],
+                },
+            };
         } catch (error) {
             return { error: "" + error };
         }
-        return {
-            result: { details: [{ message: "User created successfully" }] },
-        };
     }
 }
 
