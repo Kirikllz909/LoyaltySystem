@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const UserController = require("../controllers/user.controller");
+const LoyaltySystemController = require("../controllers/loyaltySystem.controller");
 const { createToken } = require("./JWT_Token");
 
 class AuthService {
@@ -191,13 +192,17 @@ class AuthService {
         }
 
         try {
+            const defaultSystem =
+                await LoyaltySystemController.findDefaultSystem();
             await UserController.createUser(systemId, {
                 login: data.login,
                 password: hashedPassword,
                 email: data.email,
                 role: "user",
                 balance: data.balance ? data.balance : 0,
-                systemId: data.systemId ? data.systemId : 1,
+                systemId: data.systemId
+                    ? data.systemId
+                    : defaultSystem.system_id,
             });
         } catch (error) {
             return { error: "" + error };
