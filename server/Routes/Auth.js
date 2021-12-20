@@ -13,8 +13,9 @@ Router.post("/api/authService/login", async (req, res) => {
         res.status(400).send(error.details ? error.details[0].message : error);
     }
     if (result) {
-        console.log(result.details[0].message);
-        res.status(200).send(result.details[0].message);
+        res.status(200).send(
+            result.details ? result.details[0].message : result
+        );
     }
 });
 Router.post("/api/authService/register", async (req, res) => {
@@ -24,8 +25,9 @@ Router.post("/api/authService/register", async (req, res) => {
         res.status(400).send(error.details ? error.details[0].message : error);
     }
     if (result) {
-        console.log(result.details[0].message);
-        res.status(201).send(result.details[0].message);
+        res.status(201).send(
+            result.details ? result.details[0].message : result
+        );
     }
 });
 
