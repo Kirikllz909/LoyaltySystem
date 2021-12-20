@@ -77,7 +77,7 @@ exports.updateLoyaltySystem = (systemId, loyaltySystem) => {
  * @returns loyaltySystem[0..*]
  */
 
-exports.findAllSystem = () => {
+exports.findAllSystems = () => {
     return LoyaltySystem.findAll()
         .then((allSystems) => {
             console.log(
