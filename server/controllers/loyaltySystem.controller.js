@@ -1,7 +1,7 @@
 const db = require("../models");
 const LoyaltySystem = db.loyalty_systems;
 
-//TODO: add making system main and make is_default of others systems false. Add find main system
+//TODO: add making system main and make is_default of others systems false. Add find main system. After deleting main system next would be first by id
 
 /**
  * Create loyalty system with provided information
@@ -9,12 +9,7 @@ const LoyaltySystem = db.loyalty_systems;
  */
 
 exports.createLoyaltySystem = (loyaltySystem) => {
-    return LoyaltySystem.create({
-        name: loyaltySystem.name,
-        description: loyaltySystem.description,
-        type: loyaltySystem.type,
-        is_default: loyaltySystem.isDefault,
-    })
+    return LoyaltySystem.create(loyaltySystem)
         .then((newLoyaltySystem) => {
             console.log(
                 ">> Loyalty system was successfully created: " +
@@ -84,6 +79,7 @@ exports.findAllSystems = () => {
                 ">> All systems was found: \n" +
                     JSON.stringify(allSystems, null, 4)
             );
+            return allSystems;
         })
         .catch((err) => {
             console.log(">> Error while finding all systems: " + err);
@@ -98,6 +94,23 @@ exports.findAllSystems = () => {
 
 exports.findSystem = (systemId) => {
     return LoyaltySystem.findAll({ where: { system_id: systemId } })
+        .then((foundSystem) => {
+            console.log(
+                ">> Found system: " + JSON.stringify(foundSystem, null, 4)
+            );
+            return foundSystem;
+        })
+        .catch((err) => {
+            console.log(">> Error while finding system: " + err);
+        });
+};
+
+/**
+ * Find loyalty system where is_default is true
+ * @returns loyaltySystem
+ */
+exports.findDefaultSystem = () => {
+    return LoyaltySystem.findAll({ where: { is_default: true } })
         .then((foundSystem) => {
             console.log(
                 ">> Found system: " + JSON.stringify(foundSystem, null, 4)
