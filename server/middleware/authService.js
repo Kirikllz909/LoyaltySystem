@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const UserController = require("../controllers/user.controller");
 const { createToken } = require("./JWT_Token");
 
-//TODO: create user register and and create function for updating jwt in database
 class AuthService {
     /**
      * Return result of comparing data with schema for authorization
@@ -57,7 +56,8 @@ class AuthService {
      * @returns User
      */
 
-    async findByLogin(login) {
+    async findByLogin(data) {
+        const { login } = data;
         const users = await UserController.findAllUsers();
         const filteredUsers = users.filter((user) => user.login === login);
         return filteredUsers[0];
@@ -79,8 +79,8 @@ class AuthService {
     }
 
     async isPasswordCorrect(data) {
-        const { login, password } = data;
-        const user = await this.findByLogin(login);
+        const { password } = data;
+        const user = await this.findByLogin(data);
         const validPassword = await bcrypt.compare(password, user.password);
         return validPassword;
     }
@@ -97,7 +97,7 @@ class AuthService {
      */
     async createTokenObject(data) {
         const { login } = data;
-        const user = findByLogin(login);
+        const user = await this.findByLogin(data);
         const token = createToken({ login: login, id: user.id });
         return { login: login, id: user.id, jwt: token };
     }
@@ -128,9 +128,14 @@ class AuthService {
 
         const tokenObject = await this.createTokenObject(data);
 
-        UserController.updateUser(tokenObject.id, {
-            jwt_token: tokenObject.jwt,
-        });
+        try {
+            await UserController.updateUser(tokenObject.id, {
+                jwt_token: tokenObject.jwt,
+            });
+        } catch (error) {
+            return { error: "" + error };
+        }
+        if (!updateUser) return { error: "Failed to update user" };
         return { result: { tokenObject } };
     }
 
@@ -172,8 +177,6 @@ class AuthService {
             };
         }
 
-        const tokenObject = await this.createTokenObject(data);
-
         let salt, hashedPassword;
         try {
             salt = await bcrypt.genSalt(10);
@@ -186,8 +189,9 @@ class AuthService {
         } catch (error) {
             return { error: "" + error };
         }
+
         try {
-            UserController.createUser(systemId, {
+            await UserController.createUser(systemId, {
                 login: data.login,
                 password: hashedPassword,
                 email: data.email,
