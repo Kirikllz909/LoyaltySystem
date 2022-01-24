@@ -6,7 +6,7 @@ const User = db.users;
  * @param {*} user Object which contains login, password, email, role, balance
  * @returns user
  */
-exports.createUser = (systemId, user) => {
+exports.createUser = (user) => {
     return User.create(user)
         .then((newUser) => {
             console.log(
