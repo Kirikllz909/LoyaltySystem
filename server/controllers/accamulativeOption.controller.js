@@ -79,6 +79,16 @@ exports.deleteAccamulativeOption = (optionId) => {
         });
 };
 
+exports.deleteAccamulativeOptions = (systemId) => {
+    AccamulativeSystemOption.destroy({ where: { systemId: systemId } })
+        .then(() => {
+            console.log(">> Options were successfully deleted");
+        })
+        .catch((err) => {
+            console.log(">> Failed to delete options: " + err);
+        });
+};
+
 /**
  * Find all options by provided system id
  * @param {*} systemId System id for searching options

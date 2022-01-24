@@ -41,6 +41,16 @@ exports.deleteCumulativeOption = (optionId) => {
         });
 };
 
+exports.deleteCumulativeOptions = (systemId) => {
+    CumulativeSystemOption.destroy({ where: { systemId: systemId } })
+        .then(() => {
+            console.log(">> Options were successfully deleted");
+        })
+        .catch((err) => {
+            console.log(">> Failed to delete options: " + err);
+        });
+};
+
 /**
  * Update existing option with provided data
  * @param {*} optionId Id for updating option
