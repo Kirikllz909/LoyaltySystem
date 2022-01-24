@@ -58,7 +58,7 @@ exports.updateLoyaltySystem = (systemId, loyaltySystem) => {
     )
         .then((newLoyaltySystem) => {
             console.log(
-                ">> New loyalty system was successfully created: " +
+                ">>  loyalty system was successfully updated: " +
                     JSON.stringify(newLoyaltySystem, null, 4)
             );
         })
