@@ -5,6 +5,7 @@ const db = require("./models");
 
 const authRoutes = require("./Routes/Auth");
 const loyaltySystemRoutes = require("./Routes/LoyaltySystem");
+const userRoutes = require("./Routes/User");
 
 require("dotenv").config();
 const app = express();
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //TODO: Create routes for each aspect like auth loyalty and user data
 app.use(authRoutes);
 app.use(loyaltySystemRoutes);
+app.use(userRoutes);
 
 app.listen(process.env.PORT || 3030, () => {
     console.log(`listening on ${process.env.PORT}`);
