@@ -36,6 +36,32 @@ class UserService {
         }
     }
 
+    async getUsers() {
+        try {
+            const users = await userController.findAllUsers();
+            return {
+                result: {
+                    details: [{ message: users }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
+    async getUser(id) {
+        try {
+            const user = await userController.findUser(id);
+            return {
+                result: {
+                    details: [{ message: user }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
     async updateUser(data) {
         try {
             await userController.updateUser(data.id, data);
