@@ -70,7 +70,7 @@ exports.updateAccamulativeOption = (optionId, accamulativeOption) => {
  */
 
 exports.deleteAccamulativeOption = (optionId) => {
-    AccamulativeSystemOption.destroy(optionId)
+    AccamulativeSystemOption.destroy({ where: { option_id: optionId } })
         .then(() => {
             console.log(">> Option was successfully deleted");
         })
