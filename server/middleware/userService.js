@@ -62,9 +62,9 @@ class UserService {
         }
     }
 
-    async updateUser(data) {
+    async updateUser(userId, data) {
         try {
-            await userController.updateUser(data.id, data);
+            await userController.updateUser(userId, data);
             return {
                 result: {
                     details: [{ message: "Option was successfully updated" }],
@@ -75,9 +75,9 @@ class UserService {
         }
     }
 
-    async deleteUser(data) {
+    async deleteUser(userId) {
         try {
-            await userController.deleteUser(data.id);
+            await userController.deleteUser(userId);
             return {
                 result: {
                     details: [{ message: "Option was successfully deleted" }],
