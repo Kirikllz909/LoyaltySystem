@@ -54,6 +54,36 @@ Router.patch(
     }
 );
 
+Router.get(
+    "/api/loyaltySystemService/loyaltySystem/:systemId",
+    async (req, res) => {
+        const systemId = req.params.systemId;
+        const { result, error } = await LoyaltySystemService.getLoyaltySystem(
+            systemId
+        );
+        if (error) {
+            res.status(400).send(
+                error.details ? error.details[0].message : error
+            );
+        }
+        if (result) {
+            console.log(result.details[0].message);
+            res.status(200).send(result.details[0].message);
+        }
+    }
+);
+
+Router.get("/api/loyaltySystemService/loyaltySystems", async (req, res) => {
+    const { result, error } = await LoyaltySystemService.getAllLoyaltySystems();
+    if (error) {
+        res.status(400).send(error.details ? error.details[0].message : error);
+    }
+    if (result) {
+        console.log(result.details[0].message);
+        res.status(200).send(result.details[0].message);
+    }
+});
+
 /**
  * export Router
  */
