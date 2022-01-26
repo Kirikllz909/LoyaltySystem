@@ -11,7 +11,7 @@ class PurchaseService {
         return schema.validate(data);
     }
 
-    async addUser(data) {
+    async addPurchase(data) {
         try {
             const { error } = this.validateData(data);
             if (error) {
