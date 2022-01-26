@@ -4,7 +4,7 @@ const purchaseController = require("../controllers/purchase.controller");
 class PurchaseService {
     validateData(data) {
         const schema = Joi.object({
-            userId: Joi.number().min(1).required,
+            userId: Joi.number().min(1).required(),
             systemId: Joi.number().min(1),
             purchase_amount: Joi.number().min(1),
         });
