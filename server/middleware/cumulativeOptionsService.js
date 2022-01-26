@@ -4,9 +4,9 @@ const cumulativeOptionController = require("../controllers/cumulativeOption.cont
 class cumulativeOptionsService {
     validateData(data) {
         const schema = Joi.object({
-            step_value: Joi.number().min(1),
-            discount_value: Joi.number().min(1),
-            counting_period: Joi.string().min(1),
+            step_value: Joi.number().min(0),
+            discount_value: Joi.number().min(0),
+            counting_period: Joi.string().min(2),
             systemId: Joi.number().min(1),
             option_id: Joi.number().min(1),
         });

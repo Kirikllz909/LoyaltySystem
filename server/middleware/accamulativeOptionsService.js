@@ -4,11 +4,11 @@ const accamulativeOptionController = require("../controllers/accamulativeOption.
 class accamulativeOptionsService {
     validateData(data) {
         const schema = Joi.object({
-            step_value: Joi.number().min(1),
-            purchase_exchange: Joi.number().min(1),
-            score_rate_exchange: Joi.number().min(1),
-            points_payment_limit_min: Joi.number().min(1),
-            points_payment_limit_max: Joi.number().min(1),
+            step_value: Joi.number().min(0),
+            purchase_exchange: Joi.number().min(0),
+            score_rate_exchange: Joi.number().min(0),
+            points_payment_limit_min: Joi.number().min(0),
+            points_payment_limit_max: Joi.number().min(0),
             points_time_limit: Joi.string().min(2),
             systemId: Joi.number().min(1),
             option_id: Joi.number().min(1),

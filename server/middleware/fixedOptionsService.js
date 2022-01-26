@@ -4,7 +4,7 @@ const fixedOptionsController = require("../controllers/fixedOption.controller");
 class fixedOptionsService {
     validateData(data) {
         const schema = Joi.object({
-            discount_value: Joi.number().min(1),
+            discount_value: Joi.number().min(0),
             systemId: Joi.number().min(1),
             option_id: Joi.number().min(1),
         });
