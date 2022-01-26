@@ -28,7 +28,7 @@ class UserService {
             await userController.createUser(data);
             return {
                 result: {
-                    details: [{ message: "Option was successfully created" }],
+                    details: [{ message: "User was successfully created" }],
                 },
             };
         } catch (error) {
@@ -67,7 +67,7 @@ class UserService {
             await userController.updateUser(userId, data);
             return {
                 result: {
-                    details: [{ message: "Option was successfully updated" }],
+                    details: [{ message: "User was successfully updated" }],
                 },
             };
         } catch (e) {
@@ -80,7 +80,7 @@ class UserService {
             await userController.deleteUser(userId);
             return {
                 result: {
-                    details: [{ message: "Option was successfully deleted" }],
+                    details: [{ message: "User was successfully deleted" }],
                 },
             };
         } catch (e) {
