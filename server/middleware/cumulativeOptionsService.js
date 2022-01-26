@@ -49,10 +49,10 @@ class cumulativeOptionsService {
         }
     }
 
-    async updateOption(data) {
+    async updateOption(option_id, data) {
         try {
             await cumulativeOptionController.updateCumulativeOption(
-                data.option_id,
+                option_id,
                 data
             );
             return {
@@ -65,11 +65,9 @@ class cumulativeOptionsService {
         }
     }
 
-    async deleteOption(data) {
+    async deleteOption(option_id) {
         try {
-            await cumulativeOptionController.deleteCumulativeOption(
-                data.option_id
-            );
+            await cumulativeOptionController.deleteCumulativeOption(option_id);
             return {
                 result: {
                     details: [{ message: "Option was successfully deleted" }],
@@ -80,11 +78,9 @@ class cumulativeOptionsService {
         }
     }
 
-    async deleteOptions(data) {
+    async deleteOptions(systemId) {
         try {
-            await cumulativeOptionController.deleteCumulativeOptions(
-                data.systemId
-            );
+            await cumulativeOptionController.deleteCumulativeOptions(systemId);
             return {
                 result: {
                     details: [{ message: "Options were successfully deleted" }],

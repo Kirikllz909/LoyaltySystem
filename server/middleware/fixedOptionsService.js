@@ -50,12 +50,9 @@ class fixedOptionsService {
         }
     }
 
-    async updateOption(data) {
+    async updateOption(option_id, data) {
         try {
-            await fixedOptionsController.updateFixedOption(
-                data.option_id,
-                data
-            );
+            await fixedOptionsController.updateFixedOption(option_id, data);
             return {
                 result: {
                     details: [{ message: "Option was successfully updated" }],
