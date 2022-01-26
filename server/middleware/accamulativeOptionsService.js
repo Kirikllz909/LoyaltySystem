@@ -53,7 +53,7 @@ class accamulativeOptionsService {
                 );
             return {
                 result: {
-                    details: [{ message: "Option was successfully updated" }],
+                    details: [{ message: options }],
                 },
             };
         } catch (e) {
@@ -61,10 +61,10 @@ class accamulativeOptionsService {
         }
     }
 
-    async updateOption(data) {
+    async updateOption(option_id, data) {
         try {
             await accamulativeOptionController.updateAccamulativeOption(
-                data.option_id,
+                option_id,
                 data
             );
             return {
@@ -77,10 +77,10 @@ class accamulativeOptionsService {
         }
     }
 
-    async deleteOption(data) {
+    async deleteOption(option_id) {
         try {
             await accamulativeOptionController.deleteAccamulativeOption(
-                data.option_id
+                option_id
             );
             return {
                 result: {
