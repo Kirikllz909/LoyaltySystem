@@ -18,9 +18,9 @@ Router.put("/api/userService/addUser", async (req, res) => {
     }
 });
 
-Router.delete("/api/userService/removeUser", async (req, res) => {
-    const data = req.body;
-    const { result, error } = await UserService.deleteUser(data);
+Router.delete("/api/userService/removeUser/:id", async (req, res) => {
+    const id = req.params.id;
+    const { result, error } = await UserService.deleteUser(id);
     if (error) {
         res.status(400).send(error.details ? error.details[0].message : error);
     }
@@ -30,9 +30,10 @@ Router.delete("/api/userService/removeUser", async (req, res) => {
     }
 });
 
-Router.patch("/api/userService/updateUser", async (req, res) => {
+Router.patch("/api/userService/updateUser/:id", async (req, res) => {
     const data = req.body;
-    const { result, error } = await UserService.updateUser(data);
+    const id = req.params.id;
+    const { result, error } = await UserService.updateUser(id, data);
     if (error) {
         res.status(400).send(error.details ? error.details[0].message : error);
     }
