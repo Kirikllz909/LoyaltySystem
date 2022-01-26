@@ -45,6 +45,22 @@ class accamulativeOptionsService {
         }
     }
 
+    async getOptions(systemId) {
+        try {
+            const options =
+                await accamulativeOptionController.findAllAccamulativeOptions(
+                    systemId
+                );
+            return {
+                result: {
+                    details: [{ message: "Option was successfully updated" }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
     async updateOption(data) {
         try {
             await accamulativeOptionController.updateAccamulativeOption(

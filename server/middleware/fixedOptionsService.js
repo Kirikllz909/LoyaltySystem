@@ -35,6 +35,21 @@ class fixedOptionsService {
         }
     }
 
+    async getOption(systemId) {
+        try {
+            const option = await fixedOptionsController.findFixedOption(
+                systemId
+            );
+            return {
+                result: {
+                    details: [{ message: option }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
     async updateOption(data) {
         try {
             await fixedOptionsController.updateFixedOption(

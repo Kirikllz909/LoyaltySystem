@@ -33,6 +33,22 @@ class cumulativeOptionsService {
         }
     }
 
+    async getOptions(systemId) {
+        try {
+            const options =
+                await cumulativeOptionController.findAllCumulativeOptions(
+                    systemId
+                );
+            return {
+                result: {
+                    details: [{ message: options }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
     async updateOption(data) {
         try {
             await cumulativeOptionController.updateCumulativeOption(
