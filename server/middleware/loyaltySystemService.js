@@ -1,6 +1,8 @@
 const Joi = require("joi");
 const LoyaltySystemController = require("../controllers/loyaltySystem.controller");
 
+//TODO: test all services (all options)
+
 class LoyaltySystemService {
     /**
      * Check id for correctness
@@ -59,6 +61,32 @@ class LoyaltySystemService {
         const filteredArray = systems.filter((system) => system.name === name);
         if (filteredArray.length === 0) return false;
         return true;
+    }
+
+    async getLoyaltySystem(systemId) {
+        try {
+            const system = await LoyaltySystemController.findSystem(systemId);
+            return {
+                result: {
+                    details: [{ message: system }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
+    }
+
+    async getAllLoyaltySystems() {
+        try {
+            const systems = await LoyaltySystemController.findAllSystems();
+            return {
+                result: {
+                    details: [{ message: systems }],
+                },
+            };
+        } catch (e) {
+            return { error: "" + e };
+        }
     }
 
     async addLoyaltySystem(data) {
