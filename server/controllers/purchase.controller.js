@@ -8,9 +8,13 @@ const Purchase = db.purchases;
  * @returns created purchase
  */
 
-exports.createPurchase = (userId, purchase_amount) => {
+exports.createPurchase = (userId, data) => {
     return Purchase.create({
-        purchase_amount: purchase_amount,
+        purchase_amount: data.purchase_amount,
+        discount_amount: data.discount_amount ? data.discount_amount : 0,
+        total_amount: data.total_amount
+            ? data.total_amount
+            : data.purchase_amount,
         userId: userId,
     })
         .then((purchase) => {
