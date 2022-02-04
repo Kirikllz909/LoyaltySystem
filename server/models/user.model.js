@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         balance: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DOUBLE,
             defaultValue: 0,
         },
         jwt_token: {
