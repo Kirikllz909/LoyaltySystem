@@ -4,17 +4,17 @@ const systemOptionController = require("../controllers/systemOption.controller")
 class systemOptionsService {
     validateData(data) {
         const schema = Joi.object({
-            step_value: Joi.number().min(0),
             min_purchase_value: Joi.number().min(0),
             max_purchase_value: Joi.number().min(0),
-            discount_value: Joi.number().min(0),
+            min_total_purchase_sum: Joi.number().min(0),
+            max_total_purchase_sum: Joi.number().min(0),
+            discount_value: Joi.number().min(0).max(1),
             purchase_exchange: Joi.number().min(0),
             score_rate_exchange: Joi.number().min(0),
-            points_payment_limit_min: Joi.number().min(0),
-            points_payment_limit_max: Joi.number().min(0),
+            points_payment_limit_min: Joi.number().min(0).max(1),
+            points_payment_limit_max: Joi.number().min(0).max(1),
             min_discount_date: Joi.date(),
             max_discount_date: Joi.date(),
-            points_time_limit: Joi.string().min(2),
             systemId: Joi.number().min(1).required(),
         });
         return schema.validate(data);
