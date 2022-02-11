@@ -5,9 +5,9 @@ const paramsRatioController = require("../controllers/paramsRatio.controller");
 class paramsRatiosService {
     validateData(data) {
         const schema = Joi.object({
-            step_value: Joi.number().min(0),
             total_discount_ratio: Joi.number().min(0),
-            total_points_ratio: Joi.number().min(0),
+            total_points_gain_ratio: Joi.number().min(0),
+            total_points_lost_ratio: Joi.number().min(0),
             systemId: Joi.number().min(1).required(),
         });
         return schema.validate(data);
