@@ -5,7 +5,8 @@ const ParamsRatio = db.params_ratio;
 exports.createParamsRatio = (paramsRatio) => {
     return ParamsRatio.create({
         total_discount_ratio: paramsRatio.total_discount_ratio,
-        total_points_ratio: paramsRatio.total_points_ratio,
+        total_points_gain_ratio: paramsRatio.total_points_gain_ratio,
+        total_points_lost_ratio: paramsRatio.total_points_lost_ratio,
     })
         .then((newParamsRatio) => {
             console.log(
@@ -23,7 +24,8 @@ exports.updateParamsRatio = (paramsRatioId, paramsRatio) => {
     ParamsRatio.update(
         {
             total_discount_ratio: paramsRatio.total_discount_ratio,
-            total_points_ratio: paramsRatio.total_points_ratio,
+            total_points_gain_ratio: paramsRatio.total_points_gain_ratio,
+            total_points_lost_ratio: paramsRatio.total_points_lost_ratio,
         },
         { where: { params_ratio_id: paramsRatioId } }
     )
