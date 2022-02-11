@@ -15,6 +15,16 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             defaultValue: null,
         },
+        min_total_purchase_sum: {
+            type: DataTypes.DOUBLE,
+            allowNull: true,
+            defaultValue: null,
+        },
+        max_total_purchase_sum: {
+            type: DataTypes.DOUBLE,
+            allowNull: true,
+            defaultValue: null,
+        },
         discount_value: {
             type: DataTypes.DOUBLE,
             allowNull: true,
@@ -47,11 +57,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         max_discount_date: {
             type: DataTypes.DATE,
-            allowNull: true,
-            defaultValue: null,
-        },
-        points_time_limit: {
-            type: DataTypes.STRING,
             allowNull: true,
             defaultValue: null,
         },
