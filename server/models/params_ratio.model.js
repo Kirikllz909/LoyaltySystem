@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 1,
         },
-        total_points_ratio: {
+        total_points_gain_ratio: {
+            type: DataTypes.DOUBLE,
+            allowNull: false,
+            defaultValue: 1,
+        },
+        total_points_lost_ratio: {
             type: DataTypes.DOUBLE,
             allowNull: false,
             defaultValue: 1,
