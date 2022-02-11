@@ -5,6 +5,8 @@ exports.createSystemOption = (systemOption) => {
     return SystemOption.create({
         min_purchase_value: systemOption.min_purchase_value,
         max_purchase_value: systemOption.max_purchase_value,
+        min_total_purchase_sum: systemOption.min_total_purchase_sum,
+        max_total_purchase_sum: systemOption.max_total_purchase_sum,
         discount_value: systemOption.discount_value,
         purchase_exchange: systemOption.purchase_exchange,
         score_rate_exchange: systemOption.score_rate_exchange,
@@ -32,6 +34,8 @@ exports.updateSystemOption = (optionId, systemOption) => {
         {
             min_purchase_value: systemOption.min_purchase_value,
             max_purchase_value: systemOption.max_purchase_value,
+            min_total_purchase_sum: systemOption.min_total_purchase_sum,
+            max_total_purchase_sum: systemOption.max_total_purchase_sum,
             discount_value: systemOption.discount_value,
             purchase_exchange: systemOption.purchase_exchange,
             score_rate_exchange: systemOption.score_rate_exchange,
