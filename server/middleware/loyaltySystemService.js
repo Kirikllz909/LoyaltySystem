@@ -26,21 +26,8 @@ class LoyaltySystemService {
         const schema = Joi.object({
             name: Joi.string().min(1).required(),
             description: Joi.string().min(1).required(),
-            type: Joi.string().min(5).required(),
-            is_default: Joi.boolean().required(),
         });
         return schema.validate(data);
-    }
-
-    validateType(data) {
-        const { type } = data;
-        if (
-            type !== "fixed" &&
-            type !== "cumulative" &&
-            type !== "accamulative"
-        )
-            return { error: "Wrong type" };
-        return { error: "" };
     }
 
     async isLoyaltySystemExist(systemId) {
@@ -96,11 +83,6 @@ class LoyaltySystemService {
                 return { error: "" + error };
             }
         } catch (error) {
-            return { error: "" + error };
-        }
-
-        const { error } = this.validateType(data);
-        if (error) {
             return { error: "" + error };
         }
 

@@ -10,6 +10,8 @@ const purchaseRoutes = require("./Routes/Purchase");
 const cumulativeOptionsRoutes = require("./Routes/cumulativeOption");
 const accamulativeOptionsRoutes = require("./Routes/accamulativeOption");
 const fixedOptionRoutes = require("./Routes/fixedOption");
+const systemOptionRoutes = require("./Routes/systemOption");
+const paramsRatioRoutes = require("./Routes/paramsRatio");
 
 require("dotenv").config();
 const app = express();
@@ -25,6 +27,8 @@ app.use(purchaseRoutes);
 app.use(cumulativeOptionsRoutes);
 app.use(accamulativeOptionsRoutes);
 app.use(fixedOptionRoutes);
+app.use(systemOptionRoutes);
+app.use(paramsRatioRoutes);
 
 app.listen(process.env.PORT || 3030, () => {
     console.log(`listening on ${process.env.PORT}`);

@@ -6,16 +6,16 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
         },
         purchase_amount: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DOUBLE,
             allowNull: false,
         },
         discount_amount: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DOUBLE,
             allowNull: false,
             defaultValue: 0,
         },
         total_amount: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DOUBLE,
             allowNull: false,
             defaultValue: 0,
         },

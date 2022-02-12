@@ -2,9 +2,8 @@ const Joi = require("joi");
 const purchaseController = require("../controllers/purchase.controller");
 const userController = require("../controllers/user.controller");
 const loyaltySystemController = require("../controllers/loyaltySystem.controller");
-const accamulativeOptionService = require("../middleware/accamulativeOptionsService");
-const fixedOptionService = require("../middleware/fixedOptionsService");
-const cumulativeOptionService = require("../middleware/cumulativeOptionsService");
+const systemOptionService = require("./systemOptionsService");
+const paramsRatioService = require("./paramsRatioService");
 
 class PurchaseService {
     validateData(data) {
@@ -27,10 +26,6 @@ class PurchaseService {
         return system[0];
     }
 
-    async findSystemType(userId) {
-        const system = await this.findSystem(userId);
-        return system.type;
-    }
     async findSystemId(userId) {
         const system = await this.findSystem(userId);
         return system.system_id;
@@ -42,28 +37,160 @@ class PurchaseService {
         return purchases;
     }
 
-    async findSystemOptions(userId) {
-        const systemId = await this.findSystemId(userId);
-        const type = await this.findSystemType(userId);
-        if (type === "fixed") {
-            const { result } = await fixedOptionService.getOption(systemId);
-            return result.details[0].message;
+    async findSystemOptions(systemId) {
+        const { result } = await systemOptionService.getOptions(systemId);
+        return result.details[0].message;
+    }
+
+    async findParamsRatio(systemId) {
+        const { result } = await paramsRatioService.getParamsRatio(systemId);
+        return result.details[0].message;
+    }
+
+    async calculateTotalPurchaseSum(purchases) {
+        let totalPurchaseSum = 0;
+        for (let i = 0; i < purchases.length; i++) {
+            const purchase = purchases[i];
+            totalPurchaseSum += purchase.total_amount;
         }
-        if (type === "cumulative") {
-            const { result } = await cumulativeOptionService.getOptions(
-                systemId
-            );
-            return result.details[0].message;
+        return totalPurchaseSum;
+    }
+
+    async calculateFixedDiscount(purchaseAmount, option) {
+        if (option.discount_value === null) return 0;
+        let fixedDiscount = purchaseAmount * option.discount_value;
+        return fixedDiscount;
+    }
+
+    async calculatePointsIncome(purchaseAmount, option) {
+        if (option.purchase_exchange === null) return 0;
+        let pointsIncome = purchaseAmount * option.purchase_exchange;
+        return pointsIncome;
+    }
+
+    async calculatePointsDiscount(points, option) {
+        if (option.score_rate_exchange === null) return 0;
+        let pointsDiscount = points * option.score_rate_exchange;
+        return pointsDiscount;
+    }
+
+    async filterArrByValue(purchaseAmount, options) {
+        const arrFilteredByValue = options.filter((option) => {
+            if (
+                option.min_purchase_value === null ||
+                purchaseAmount >= option.min_purchase_value
+            )
+                if (
+                    option.max_purchase_value === null ||
+                    purchaseAmount <= option.max_purchase_value
+                )
+                    return true;
+            return false;
+        });
+        return arrFilteredByValue;
+    }
+
+    async filterArrByTotalPurchaseSum(totalPurchaseSum, arrFilteredByValue) {
+        const arrFilteredByTotalPurchaseSum = arrFilteredByValue.filter(
+            (option) => {
+                if (
+                    option.min_total_purchase_sum === null ||
+                    totalPurchaseSum >= option.min_total_purchase_sum
+                )
+                    if (
+                        option.max_total_purchase_sum === null ||
+                        totalPurchaseSum <= option.max_total_purchase_sum
+                    )
+                        return true;
+                return false;
+            }
+        );
+        return arrFilteredByTotalPurchaseSum;
+    }
+
+    async filterArrByDate(arrFilteredByTotalPurchaseSum) {
+        const arrFilteredByDate = arrFilteredByTotalPurchaseSum.filter(
+            (option) => {
+                let now = Date.now();
+                if (
+                    option.min_discount_date === null ||
+                    now >= option.min_discount_date
+                )
+                    if (
+                        option.max_discount_date === null ||
+                        now <= option.max_discount_date
+                    )
+                        return true;
+                return false;
+            }
+        );
+        return arrFilteredByDate;
+    }
+
+    async filterArrByDiscountValue(
+        purchaseAmount,
+        pointsForDiscount,
+        userBalance,
+        arrFilteredByDate
+    ) {
+        const arrFilteredByDiscountValue = arrFilteredByDate.filter(
+            (option) => {
+                if (option.score_rate_exchange === null) return false;
+                let totalDiscount = 0;
+                let pointsToCurrency =
+                    pointsForDiscount * option.score_rate_exchange;
+                if (option.discount_value === null)
+                    totalDiscount = pointsToCurrency;
+                else
+                    totalDiscount =
+                        pointsToCurrency +
+                        purchaseAmount * option.discount_value;
+                if (totalDiscount <= purchaseAmount)
+                    if (pointsForDiscount <= userBalance) return true;
+                return false;
+            }
+        );
+        return arrFilteredByDiscountValue;
+    }
+
+    async filterArrByPaymentLimit(
+        purchaseAmount,
+        pointsForDiscount,
+        arrFilteredByDiscountValue
+    ) {
+        const arrFilteredByPaymentLimit = arrFilteredByDiscountValue.filter(
+            (option) => {
+                if (option.score_rate_exchange === null) return false;
+                let pointsToCurrency =
+                    pointsForDiscount * option.score_rate_exchange;
+                let pointsDiscountPercent = pointsToCurrency / purchaseAmount;
+                if (
+                    option.points_payment_limit_min === null ||
+                    pointsDiscountPercent >= option.points_payment_limit_min
+                )
+                    if (
+                        option.points_payment_limit_max === null ||
+                        pointsDiscountPercent <= option.points_payment_limit_max
+                    )
+                        return true;
+                return false;
+            }
+        );
+        return arrFilteredByPaymentLimit;
+    }
+
+    async findMaxIndex(arr) {
+        if (arr.length === 0) return -1;
+        let maxElement = arr[0];
+        let maxIndex = 0;
+        for (let i = 0; i < arr.length; i++) {
+            const element = arr[i];
+            if (maxElement < element) {
+                maxElement = element;
+                maxIndex = i;
+            }
         }
-        if (type === "accamulative") {
-            const { result } = await accamulativeOptionService.getOptions(
-                systemId
-            );
-            return result.details[0].message;
-        }
-        if (type === "none") {
-            return null;
-        }
+        return maxIndex;
     }
 
     async addPurchase(data) {
@@ -76,74 +203,104 @@ class PurchaseService {
             return { error: "" + error };
         }
 
-        const type = await this.findSystemType(data.userId);
-        const options = await this.findSystemOptions(data.userId);
+        const systemId = await this.findSystemId(data.userId);
+        const options = await this.findSystemOptions(systemId);
         const purchases = await this.getPurchases(data.userId);
         const users = await userController.findUser(data.userId);
+        const paramsRatio = await this.findParamsRatio(systemId);
 
         if (options === null) {
             return { error: "Missing options in loyalty system" };
         }
-        if (type === "fixed") {
-            const discountPercent = options[0].discount_value / 100;
-            let discountSum = data.purchase_amount * discountPercent;
-            data.discount_amount = discountSum;
-            data.total_amount = data.purchase_amount - data.discount_amount;
-        }
-        if (type === "cumulative") {
-            let sum = 0;
-            let index = 0;
-            for (let i = 0; i < purchases.length; i++) {
-                sum += purchases[i].total_amount;
-            }
-            for (let i = 0; i < options.length; i++) {
-                if (sum >= options[i].step_value) index = i;
-                else break;
-            }
-            const discountPercent = options[index].discount_value / 100;
-            let discountSum = data.purchase_amount * discountPercent;
-            data.discount_amount = discountSum;
-            data.total_amount = data.purchase_amount - data.discount_amount;
-        }
-        if (type === "accamulative") {
-            let index = 0;
-            let purchaseAmount = data.purchase_amount;
-            for (let i = 0; i < options.length; i++) {
-                if (purchaseAmount >= options[i].step_value) index = i;
-                else break;
-            }
-            if (data.points_amount_for_discount) {
-                let balance = users[0].balance;
-                if (balance === 0) return { error: "Balance is 0" };
-                let balanceInRubles =
-                    Number(balance) / options[index].score_rate_exchange;
-                let discountSum =
-                    data.points_amount_for_discount /
-                    options[index].score_rate_exchange;
-                if (discountSum > balanceInRubles)
-                    discountSum = balanceInRubles;
-                if (discountSum > data.purchase_amount)
-                    discountSum = data.purchase_amount;
-                data.discount_amount = discountSum;
-                data.total_amount = data.purchase_amount - data.discount_amount;
-                let points =
-                    options[index].purchase_exchange * data.total_amount;
-                let newBalance = {};
-                newBalance.balance =
-                    balance -
-                    discountSum * options[index].score_rate_exchange +
-                    points;
-                await userController.updateUser(data.userId, newBalance);
-            } else {
-                let balance = Number(users[0].balance);
-                data.discount_amount = 0;
-                data.total_amount = data.purchase_amount;
-                let newBalance = {};
-                newBalance.balance = balance + Number(points);
-                await userController.updateUser(data.userId, newBalance);
-            }
+
+        const totalPurchaseSum = await this.calculateTotalPurchaseSum(
+            purchases
+        );
+        const userBalance = users[0].balance;
+        const purchaseAmount = data.purchase_amount;
+        const pointsForDiscount = data.points_amount_for_discount;
+
+        //Filter array by xxx_purchase_value
+        const arrFilteredByValue = await this.filterArrByValue(
+            purchaseAmount,
+            options
+        );
+
+        //filter arr by total purchase sum
+        const arrFilteredByTotalPurchaseSum =
+            await this.filterArrByTotalPurchaseSum(
+                totalPurchaseSum,
+                arrFilteredByValue
+            );
+
+        //Filter array by date
+        const arrFilteredByDate = await this.filterArrByDate(
+            arrFilteredByTotalPurchaseSum
+        );
+
+        let arrFilteredByPaymentLimit = [];
+        //Filter array by points_payment_limit
+        if (Number(pointsForDiscount) > 0) {
+            let arrFilteredByDiscountValue =
+                await this.filterArrByDiscountValue(
+                    purchaseAmount,
+                    Number(pointsForDiscount),
+                    userBalance,
+                    arrFilteredByDate
+                );
+            arrFilteredByPaymentLimit = await this.filterArrByPaymentLimit(
+                purchaseAmount,
+                Number(pointsForDiscount),
+                arrFilteredByDiscountValue
+            );
         }
 
+        //calculate ratios summary
+        let ratioSumArr = [];
+        let workingArr = [];
+        if (Number(pointsForDiscount) > 0)
+            workingArr = arrFilteredByPaymentLimit;
+        else workingArr = arrFilteredByDate;
+        for (let i = 0; i < workingArr.length; i++) {
+            const option = workingArr[i];
+            let fixedDiscount = await this.calculateFixedDiscount(
+                    purchaseAmount,
+                    option
+                ),
+                pointsDiscount = await this.calculatePointsDiscount(
+                    pointsForDiscount,
+                    option
+                ),
+                pointsGot = await this.calculatePointsIncome(
+                    purchaseAmount - fixedDiscount - pointsDiscount,
+                    option
+                );
+            let ratioSum =
+                fixedDiscount * paramsRatio[0].total_discount_ratio +
+                pointsGot * paramsRatio[0].total_points_gain_ratio -
+                pointsDiscount * paramsRatio[0].total_points_lost_ratio;
+            ratioSumArr.push(ratioSum);
+        }
+        let maxRatioSumIndex = await this.findMaxIndex(ratioSumArr);
+        if (maxRatioSumIndex === -1)
+            return { error: "Missing options with correct conditions" };
+        let fixedDiscount = await this.calculateFixedDiscount(
+                purchaseAmount,
+                workingArr[maxRatioSumIndex]
+            ),
+            pointsDiscount = await this.calculatePointsDiscount(
+                pointsForDiscount,
+                workingArr[maxRatioSumIndex]
+            ),
+            pointsGot = await this.calculatePointsIncome(
+                purchaseAmount - fixedDiscount - pointsDiscount,
+                workingArr[maxRatioSumIndex]
+            );
+        data.discount_amount = fixedDiscount + pointsDiscount;
+        data.total_amount = purchaseAmount - fixedDiscount - pointsDiscount;
+        await userController.updateUser(data.userId, {
+            balance: userBalance + pointsGot - pointsDiscount,
+        });
         try {
             await purchaseController.createPurchase(data.userId, data);
             return {

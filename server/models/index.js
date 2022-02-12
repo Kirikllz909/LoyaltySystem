@@ -33,6 +33,8 @@ db.cumulative_system_options = require("./cumulative_system_option.model.js")(
 );
 db.accamulative_system_options =
     require("./accamulative_system_option.model.js")(sequelize, Sequelize);
+db.system_options = require("./system_option.model.js")(sequelize, Sequelize);
+db.params_ratio = require("./params_ratio.model.js")(sequelize, Sequelize);
 
 //Configuration relationship between models
 //User have many purchases but only one loyalty system and personal information
@@ -65,6 +67,27 @@ db.loyalty_systems.hasMany(db.cumulative_system_options, {
 db.loyalty_systems.hasMany(db.accamulative_system_options, {
     foreignKey: "systemId",
     as: "accamulative_options",
+});
+
+db.loyalty_systems.hasMany(db.system_options, {
+    foreignKey: "systemId",
+    as: "system_options",
+});
+db.loyalty_systems.hasOne(db.params_ratio, {
+    foreignKey: "systemId",
+    as: "params_ratio",
+});
+
+//params_ratio
+db.params_ratio.belongsTo(db.loyalty_systems, {
+    foreignKey: "systemId",
+    as: "system",
+});
+
+//system_options
+db.system_options.belongsTo(db.loyalty_systems, {
+    foreignKey: "systemId",
+    as: "system",
 });
 
 //Only one loyalty system can have one fixed system option
