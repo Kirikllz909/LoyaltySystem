@@ -11,7 +11,7 @@ class AuthService {
      */
     login(login, password) {
         return axios
-            .post(API_URL + "login", {
+            .post(API_URL + "/login", {
                 login: login,
                 password: password,
             })
