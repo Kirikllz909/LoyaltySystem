@@ -1,11 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default class Login extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.handleLoginChange = this.handleLoginChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     state = {
@@ -13,18 +15,25 @@ export default class Login extends React.Component {
         password: "",
     };
 
+    //TODO:  Make request with AuthService
+
     handleLoginChange(event) {
         this.setState({ login: event.target.value });
     }
     handlePasswordChange(event) {
         this.setState({ password: event.target.value });
     }
-    handleSubmit() {}
+    handleSubmit(event) {
+        event.preventDefault();
+    }
 
     render() {
         return (
             <div className="container col-3 align-self-center border-2  border p-4 mt-5">
-                <form className="row" onSubmit={() => this.handleSubmit()}>
+                <form
+                    className="row"
+                    onSubmit={(event) => this.handleSubmit(event)}
+                >
                     <p>Login</p>
                     <input
                         type="text"

@@ -17,6 +17,8 @@ export default class Register extends React.Component {
         email: "",
     };
 
+    //TODO: Make request with AuthService
+
     handleLoginChange(event) {
         this.setState({ login: event.target.value });
     }
