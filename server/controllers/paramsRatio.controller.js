@@ -7,6 +7,7 @@ exports.createParamsRatio = (paramsRatio) => {
         total_discount_ratio: paramsRatio.total_discount_ratio,
         total_points_gain_ratio: paramsRatio.total_points_gain_ratio,
         total_points_lost_ratio: paramsRatio.total_points_lost_ratio,
+        systemId: paramsRatio.systemId,
     })
         .then((newParamsRatio) => {
             console.log(
