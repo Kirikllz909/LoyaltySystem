@@ -82,7 +82,7 @@ class PurchaseService {
             )
                 if (
                     option.max_purchase_value === null ||
-                    purchaseAmount <= option.min_purchase_value
+                    purchaseAmount <= option.max_purchase_value
                 )
                     return true;
             return false;
@@ -127,18 +127,55 @@ class PurchaseService {
         return arrFilteredByDate;
     }
 
-    async filterArrByPaymentLimit(purchaseAmount, arrFilteredByDate) {
-        const arrFilteredByPaymentLimit = arrFilteredByDate.filter((option) => {
-            if (option.score_rate_exchange === null) return false;
-            let pointsToCurrency = purchaseAmount * option.score_rate_exchange;
-            let pointsDiscountPercent = pointsToCurrency / purchaseAmount;
-            if (
-                pointsDiscountPercent >= option.points_payment_limit_min &&
-                pointsDiscountPercent <= option.points_payment_limit_max
-            )
-                return true;
-            return false;
-        });
+    async filterArrByDiscountValue(
+        purchaseAmount,
+        pointsForDiscount,
+        userBalance,
+        arrFilteredByDate
+    ) {
+        const arrFilteredByDiscountValue = arrFilteredByDate.filter(
+            (option) => {
+                if (option.score_rate_exchange === null) return false;
+                let totalDiscount = 0;
+                let pointsToCurrency =
+                    pointsForDiscount * option.score_rate_exchange;
+                if (option.discount_value === null)
+                    totalDiscount = pointsToCurrency;
+                else
+                    totalDiscount =
+                        pointsToCurrency +
+                        purchaseAmount * option.discount_value;
+                if (totalDiscount <= purchaseAmount)
+                    if (pointsForDiscount <= userBalance) return true;
+                return false;
+            }
+        );
+        return arrFilteredByDiscountValue;
+    }
+
+    async filterArrByPaymentLimit(
+        purchaseAmount,
+        pointsForDiscount,
+        arrFilteredByDiscountValue
+    ) {
+        const arrFilteredByPaymentLimit = arrFilteredByDiscountValue.filter(
+            (option) => {
+                if (option.score_rate_exchange === null) return false;
+                let pointsToCurrency =
+                    pointsForDiscount * option.score_rate_exchange;
+                let pointsDiscountPercent = pointsToCurrency / purchaseAmount;
+                if (
+                    option.points_payment_limit_min === null ||
+                    pointsDiscountPercent >= option.points_payment_limit_min
+                )
+                    if (
+                        option.points_payment_limit_max === null ||
+                        pointsDiscountPercent <= option.points_payment_limit_max
+                    )
+                        return true;
+                return false;
+            }
+        );
         return arrFilteredByPaymentLimit;
     }
 
@@ -203,16 +240,25 @@ class PurchaseService {
 
         let arrFilteredByPaymentLimit = [];
         //Filter array by points_payment_limit
-        if (Number(data.points_amount_for_discount) > 0)
+        if (Number(pointsForDiscount) > 0) {
+            let arrFilteredByDiscountValue =
+                await this.filterArrByDiscountValue(
+                    purchaseAmount,
+                    Number(pointsForDiscount),
+                    userBalance,
+                    arrFilteredByDate
+                );
             arrFilteredByPaymentLimit = await this.filterArrByPaymentLimit(
                 purchaseAmount,
-                arrFilteredByDate
+                Number(pointsForDiscount),
+                arrFilteredByDiscountValue
             );
+        }
 
         //calculate ratios summary
         let ratioSumArr = [];
         let workingArr = [];
-        if (Number(data.points_amount_for_discount) > 0)
+        if (Number(pointsForDiscount) > 0)
             workingArr = arrFilteredByPaymentLimit;
         else workingArr = arrFilteredByDate;
         for (let i = 0; i < workingArr.length; i++) {
@@ -236,7 +282,8 @@ class PurchaseService {
             ratioSumArr.push(ratioSum);
         }
         let maxRatioSumIndex = await this.findMaxIndex(ratioSumArr);
-        if (maxRatioSumIndex === -1) return { error: "Missing options" };
+        if (maxRatioSumIndex === -1)
+            return { error: "Missing options with correct conditions" };
         let fixedDiscount = await this.calculateFixedDiscount(
                 purchaseAmount,
                 workingArr[maxRatioSumIndex]
@@ -252,7 +299,7 @@ class PurchaseService {
         data.discount_amount = fixedDiscount + pointsDiscount;
         data.total_amount = purchaseAmount - fixedDiscount - pointsDiscount;
         await userController.updateUser(data.userId, {
-            balance: userBalance + pointsGot,
+            balance: userBalance + pointsGot - pointsDiscount,
         });
         try {
             await purchaseController.createPurchase(data.userId, data);
