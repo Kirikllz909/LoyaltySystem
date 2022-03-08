@@ -70,7 +70,7 @@ class PurchaseService {
 
     async calculatePointsDiscount(points, option) {
         if (option.score_rate_exchange === null) return 0;
-        let pointsDiscount = points * option.score_rate_exchange;
+        let pointsDiscount = points / option.score_rate_exchange;
         return pointsDiscount;
     }
 
@@ -138,7 +138,7 @@ class PurchaseService {
                 if (option.score_rate_exchange === null) return false;
                 let totalDiscount = 0;
                 let pointsToCurrency =
-                    pointsForDiscount * option.score_rate_exchange;
+                    pointsForDiscount / option.score_rate_exchange;
                 if (option.discount_value === null)
                     totalDiscount = pointsToCurrency;
                 else
@@ -162,7 +162,7 @@ class PurchaseService {
             (option) => {
                 if (option.score_rate_exchange === null) return false;
                 let pointsToCurrency =
-                    pointsForDiscount * option.score_rate_exchange;
+                    pointsForDiscount / option.score_rate_exchange;
                 let pointsDiscountPercent = pointsToCurrency / purchaseAmount;
                 if (
                     option.points_payment_limit_min === null ||
