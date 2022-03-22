@@ -23,16 +23,6 @@ db.users = require("./user.model.js")(sequelize, Sequelize);
 db.purchases = require("./purchase.model.js")(sequelize, Sequelize);
 db.personal_datas = require("./personal_data.model.js")(sequelize, Sequelize);
 db.loyalty_systems = require("./loyalty_system.model.js")(sequelize, Sequelize);
-db.fixed_system_options = require("./fixed_system_option.model.js")(
-    sequelize,
-    Sequelize
-);
-db.cumulative_system_options = require("./cumulative_system_option.model.js")(
-    sequelize,
-    Sequelize
-);
-db.accamulative_system_options =
-    require("./accamulative_system_option.model.js")(sequelize, Sequelize);
 db.system_options = require("./system_option.model.js")(sequelize, Sequelize);
 db.params_ratio = require("./params_ratio.model.js")(sequelize, Sequelize);
 
@@ -56,18 +46,6 @@ db.personal_datas.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 
 // Loyalty system can have many users, one fixed option or many cumulative options or many accumulative options
 db.loyalty_systems.hasMany(db.users, { foreignKey: "systemId" });
-db.loyalty_systems.hasOne(db.fixed_system_options, {
-    foreignKey: "systemId",
-    as: "fixed_option",
-});
-db.loyalty_systems.hasMany(db.cumulative_system_options, {
-    foreignKey: "systemId",
-    as: "cumulative_options",
-});
-db.loyalty_systems.hasMany(db.accamulative_system_options, {
-    foreignKey: "systemId",
-    as: "accamulative_options",
-});
 
 db.loyalty_systems.hasMany(db.system_options, {
     foreignKey: "systemId",
@@ -89,24 +67,5 @@ db.system_options.belongsTo(db.loyalty_systems, {
     foreignKey: "systemId",
     as: "system",
 });
-
-//Only one loyalty system can have one fixed system option
-db.fixed_system_options.belongsTo(db.loyalty_systems, {
-    foreignKey: "systemId",
-    as: "system",
-});
-
-//Many cumulative system option can have one loyalty system
-db.cumulative_system_options.belongsTo(db.loyalty_systems, {
-    foreignKey: "systemId",
-    as: "system",
-});
-
-//Many accumulative system option can have one loyalty system
-db.accamulative_system_options.belongsTo(db.loyalty_systems, {
-    foreignKey: "systemId",
-    as: "system",
-});
-
 //Export configured database variable
 module.exports = db;

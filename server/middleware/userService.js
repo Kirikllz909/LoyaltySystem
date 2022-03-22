@@ -4,10 +4,6 @@ const userController = require("../controllers/user.controller");
 class UserService {
     validateData(data) {
         const schema = Joi.object({
-            login: Joi.string().min(6).alphanum(),
-            email: Joi.string().min(6).email(),
-            password: Joi.string().min(6),
-            role: Joi.string().min(4),
             balance: Joi.number().min(1),
             systemId: Joi.number().min(1),
             id: Joi.number().min(1),

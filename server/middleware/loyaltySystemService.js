@@ -1,8 +1,6 @@
 const Joi = require("joi");
 const LoyaltySystemController = require("../controllers/loyaltySystem.controller");
 
-//TODO: test all services (all options)
-
 class LoyaltySystemService {
     /**
      * Check id for correctness
