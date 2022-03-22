@@ -15,6 +15,7 @@ exports.createPurchase = (userId, data) => {
         total_amount: data.total_amount
             ? data.total_amount
             : data.purchase_amount,
+        option_id: data.option_id,
         userId: userId,
     })
         .then((purchase) => {

@@ -10,6 +10,7 @@ class PurchaseService {
         const schema = Joi.object({
             userId: Joi.number().min(1).required(),
             systemId: Joi.number().min(1),
+            option_id: Joi.number().min(0),
             purchase_amount: Joi.number().min(1),
             points_amount_for_discount: Joi.number().min(0), //Amount of points for discount
         });
@@ -258,6 +259,7 @@ class PurchaseService {
         //calculate ratios summary
         let ratioSumArr = [];
         let workingArr = [];
+        let selectedOptionId = 0;
         if (Number(pointsForDiscount) > 0)
             workingArr = arrFilteredByPaymentLimit;
         else workingArr = arrFilteredByDate;
@@ -284,6 +286,7 @@ class PurchaseService {
         let maxRatioSumIndex = await this.findMaxIndex(ratioSumArr);
         if (maxRatioSumIndex === -1)
             return { error: "Missing options with correct conditions" };
+        selectedOptionId = workingArr[maxRatioSumIndex].option_id;
         let fixedDiscount = await this.calculateFixedDiscount(
                 purchaseAmount,
                 workingArr[maxRatioSumIndex]
@@ -296,13 +299,19 @@ class PurchaseService {
                 purchaseAmount - fixedDiscount - pointsDiscount,
                 workingArr[maxRatioSumIndex]
             );
-        data.discount_amount = fixedDiscount + pointsDiscount;
-        data.total_amount = purchaseAmount - fixedDiscount - pointsDiscount;
-        await userController.updateUser(data.userId, {
+
+        let purchase = {};
+        purchase.purchase_amount = data.purchase_amount;
+        purchase.discount_amount = fixedDiscount + pointsDiscount;
+        purchase.total_amount = purchaseAmount - fixedDiscount - pointsDiscount;
+        purchase.userId = data.userId;
+        purchase.option_id = selectedOptionId;
+
+        await userController.updateUser(purchase.userId, {
             balance: userBalance + pointsGot - pointsDiscount,
         });
         try {
-            await purchaseController.createPurchase(data.userId, data);
+            await purchaseController.createPurchase(purchase.userId, purchase);
             return {
                 result: {
                     details: [{ message: "Purchase was successfully created" }],

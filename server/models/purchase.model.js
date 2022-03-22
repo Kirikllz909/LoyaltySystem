@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 0,
         },
+        option_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         purchase_date: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
