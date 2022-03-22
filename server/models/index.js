@@ -21,7 +21,6 @@ db.sequelize = sequelize;
 //Loading models to further work with database
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.purchases = require("./purchase.model.js")(sequelize, Sequelize);
-db.personal_datas = require("./personal_data.model.js")(sequelize, Sequelize);
 db.loyalty_systems = require("./loyalty_system.model.js")(sequelize, Sequelize);
 db.system_options = require("./system_option.model.js")(sequelize, Sequelize);
 db.params_ratio = require("./params_ratio.model.js")(sequelize, Sequelize);
