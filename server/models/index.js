@@ -27,10 +27,6 @@ db.params_ratio = require("./params_ratio.model.js")(sequelize, Sequelize);
 
 //Configuration relationship between models
 //User have many purchases but only one loyalty system and personal information
-db.users.hasOne(db.personal_datas, {
-    foreignKey: "userId",
-    as: "personal_data",
-});
 db.users.belongsTo(db.loyalty_systems, {
     foreignKey: "systemId",
     as: "loyalty_system",
@@ -39,9 +35,6 @@ db.users.hasMany(db.purchases, { foreignKey: "userId", as: "purchases" });
 
 //Many purchases have one user
 db.purchases.belongsTo(db.users, { foreignKey: "userId", as: "user" });
-
-//Only one personal information have one user
-db.personal_datas.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 
 // Loyalty system can have many users, one fixed option or many cumulative options or many accumulative options
 db.loyalty_systems.hasMany(db.users, { foreignKey: "systemId" });
