@@ -19,11 +19,11 @@ Router.put("/api/loyaltySystemService/addLoyaltySystem", async (req, res) => {
 });
 
 Router.delete(
-    "/api/loyaltySystemService/removeLoyaltySystem",
+    "/api/loyaltySystemService/removeLoyaltySystem/:systemId",
     async (req, res) => {
-        const data = req.body;
+        const systemId = req.params.systemId;
         const { result, error } =
-            await LoyaltySystemService.removeLoyaltySystem(data.systemId);
+            await LoyaltySystemService.removeLoyaltySystem(systemId);
         if (error) {
             res.status(400).send(
                 error.details ? error.details[0].message : error
@@ -37,11 +37,12 @@ Router.delete(
 );
 
 Router.patch(
-    "/api/loyaltySystemService/updateLoyaltySystem",
+    "/api/loyaltySystemService/updateLoyaltySystem/:systemId",
     async (req, res) => {
+        const systemId = req.params.systemId;
         const data = req.body;
         const { result, error } =
-            await LoyaltySystemService.updateLoyaltySystem(data.systemId, data);
+            await LoyaltySystemService.updateLoyaltySystem(systemId, data);
         if (error) {
             res.status(400).send(
                 error.details ? error.details[0].message : error
